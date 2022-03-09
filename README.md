@@ -10,4 +10,6 @@ For facial detection, we are currently using [Haarcascade](https://github.com/op
 
 ### Example
 Below image is the result of the model output:
+<br>
+
 ![couldnt find image](output/500.jpg)
