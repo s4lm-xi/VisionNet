@@ -26,25 +26,25 @@ With the current data we generate several graphs, such as Piechart, Distribution
 Check out the examples below:
 <br>
 
-Distribution Plot
+#### Distribution Plot
 ![couldnt find image](output/dist.jpg)
 
 <br>
 
-Violin Plot
+#### Violin Plot
 ![couldnt find image](output/violin.jpg)
 
 <br>
 
-Pie Chart
+#### Pie Chart
 ![couldnt find image](output/pie.jpg)
 
 <br>
 
-Bar Plot
+#### Bar Plot
 ![couldnt find image](output/bar.jpg)
 
 <br>
 
-Bar Plot
+#### Bar Plot
 ![couldnt find image](output/posneg.jpg)
