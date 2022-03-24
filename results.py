@@ -28,13 +28,13 @@ amazed_frequency = emotions.count('Amazed')
 frequency_all = [upset_frequency, annoyed_frequency, distress_frequency, satisfied_frequency, dissatisfied_frequency, neutral_frequency, amazed_frequency]
 
 plt.bar(emotions_names, frequency_all)
-plt.show()
+plt.savefig('1.jpg')
 
 # Emotions with reference to frame number
 
 emotion_occurunce_frameno = []
 for i in emotions:
-    if i == 'Upset
+    if i == 'Upset':
         emotion_occurunce_frameno.append(1)
     elif i == 'Annoyed':
         emotion_occurunce_frameno.append(2)
@@ -46,75 +46,109 @@ for i in emotions:
         emotion_occurunce_frameno.append(5)
     elif i == 'Neutral':
         emotion_occurunce_frameno.append(6)
+    else:
+        print(i)
         
 plt.scatter(frame_nox, emotion_occurunce_frameno)
-plt.show()
+plt.savefig('2.jpg')
 
 # amaze occurence at which frame, with cumulative plot
-fig, axes = plt.subplots(4, 1)
+fig, axes = plt.subplots(7, 1)
 
-amazed_count = 1
-engaged_count = 1
+upset_count = 1
+annoyed_count = 1
+distress_count = 1
 satisfied_count = 1
-unsatisfied_count = 1
+dissatisfied_count = 1
+neutral_count = 1
 
 
-c_amazed = []
-c_engaged = []
+c_upset = []
+c_annoyed = []
+c_distress = []
 c_satisfied = []
-c_unsatisfied = []
-for i in emotions:
-    if i == 'Amazed':
-        amazed_count += 1
-        c_amazed.append(amazed_count)
-    else:
-        c_amazed.append(amazed_count)
+c_dissatisfied = []
+c_neutral = []
 
-    if i == 'Engaged':
-        engaged_count += 1
-        c_engaged.append(engaged_count)
+for i in emotions:
+    if i == 'Upset':
+        upset_count += 1
+        c_upset.append(upset_count)
     else:
-        c_engaged.append(engaged_count)
+        c_upset.append(upset_count)
+
+    if i == 'Annoyed':
+        annoyed_count += 1
+        c_annoyed.append(annoyed_count)
+    else:
+        c_annoyed.append(annoyed_count)
+
+    if i == 'Distress':
+        distress_count += 1
+        c_distress.append(distress_count)
+    else:
+        c_distress.append(distress_count)
 
     if i == 'Satisfied':
         satisfied_count += 1
         c_satisfied.append(satisfied_count)
     else:
         c_satisfied.append(satisfied_count)
-
-    if i == 'Unsatisfied':
-        unsatisfied_count += 1
-        c_unsatisfied.append(unsatisfied_count)
+    
+    if i == 'Dissatisfied':
+        dissatisfied_count += 1
+        c_dissatisfied.append(dissatisfied_count)
     else:
-        c_unsatisfied.append(unsatisfied_count)
+        c_dissatisfied.append(dissatisfied_count)
+    
+    if i == 'Neutral':
+        neutral_count += 1
+        c_neutral.append(neutral_count)
+    else:
+        c_neutral.append(neutral_count)
 
 #change in emotions
 l = 0
 for k in range(100, frame_no, 100):
-    change = (c_amazed[k] - c_amazed[l])/100
+    change = (c_upset[k] - c_upset[l])/100
     if change >= 0.1:
-        print('increase in amazed emotions between', l, 'and', k)
+        print('increase in Upset emotions between', l, 'and', k)
     l = k
 
 l = 0
 for k in range(100, frame_no, 100):
-    change = (c_engaged[k] - c_engaged[l])/100
+    change = (c_annoyed[k] - c_annoyed[l])/100
     if change >= 0.1:
-        print('increase in engaged emotions between', l, 'and', k)
+        print('increase in Annoyed emotions between', l, 'and', k)
+    l = k
+
+l = 0
+for k in range(100, frame_no, 100):
+    change = (c_distress[k] - c_distress[l])/100
+    if change >= 0.1:
+        print('increase in Distress emotions between', l, 'and', k)
     l = k
 
 l = 0
 for k in range(100, frame_no, 100):
     change = (c_satisfied[k] - c_satisfied[l])/100
     if change >= 0.1:
-        print('increase in satisfied emotions between', l, 'and', k)
+        print('increase in Satisfied emotions between', l, 'and', k)
+    l = k
+    
+########################################################################################3    
+l = 0
+for k in range(100, frame_no, 100):
+    change = (c_dissatisfied[k] - c_dissatisfied[l])/100
+    if change >= 0.1:
+        print('increase in Dissatisfied emotions between', l, 'and', k)
     l = k
 
 l = 0
 for k in range(100, frame_no, 100):
-    change = (c_unsatisfied[k] - c_unsatisfied[l])/100
+    change = (c_neutral[k] - c_neutral[l])/100
     if change >= 0.1:
-        print('increase in unsatisfied emotions between', l, 'and', k)
+        print('increase in Neutral emotions between', l, 'and', k)
     l = k
 
 # cumulative plot
@@ -128,11 +162,13 @@ for k in range(100, frame_no, 100):
 #        c_engaged.append(j)
 
 
-axes[0].plot(frame_nox, c_amazed, 'g')
-axes[1].plot(frame_nox, c_engaged, 'm')
-axes[2].plot(frame_nox, c_satisfied, 'r')
-axes[3].plot(frame_nox, c_unsatisfied, 'y')
-plt.show()
+axes[0].plot(frame_nox, c_upset, 'g')
+axes[1].plot(frame_nox, c_annoyed, 'm')
+axes[2].plot(frame_nox, c_distress, 'r')
+axes[3].plot(frame_nox, c_dissatisfied, 'y')
+axes[3].plot(frame_nox, c_neutral, 'l')
+
+plt.savefig('3.jpg')
 
 
 # I need to write a code that detects if there is no change for 300 frames to notify the user

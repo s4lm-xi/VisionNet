@@ -81,13 +81,20 @@ while True:
                 res = np.expand_dims(res, 0)
 
                 # Feed the model the roi image
+
                 pred = np.argmax(model.predict(res))
-                if pred == 0 or pred == 3:
-                    text = 'Happy'
-                elif pred == 1 or pred == 4:
-                    text = 'Sad'
-                elif pred == 2 or pred == 5:
-                    text = 'Surprise'
+                if pred == 0:
+                    text = 'Upset'
+                if pred == 1:
+                    text = 'Annoyed'
+                if pred == 2:
+                    text = 'Distress'
+                if pred == 3:
+                    text = 'Satisfied'
+                if pred == 4:
+                    text = 'Dissatisfied'
+                if pred == 5:
+                    text = 'Amazed'
                 else:
                     text = 'Neutral'
 
@@ -120,10 +127,16 @@ df.to_csv('results.csv', index=False, header=True)
 
 # Creating graphs
 df = pd.read_csv('results.csv')
-categories = ['Neutral','Happy','Sad','Surprise']
-
-size = [df['class'].value_counts()[0], df['class'].value_counts()[1], df['class'].value_counts()[2], df['class'].value_counts()[3]]
-
+categories = []
+size = []
+if len(df['class']) != 0:
+    unique = df['class'].unique()
+    
+    for value in range(len(df['class'].value_counts())):
+        size.append(df['class'].value_counts()[value])
+        
+    for value in range(len(unique)):
+        categories.append(unique[value])
 # Pie chart
 plt.figure(figsize=(15,13))
 plt.title('Percentage of emotions')
@@ -132,7 +145,7 @@ plt.savefig('graphs/pie.jpg')
 
 # Barplot
 plt.figure(figsize=(15,13))
-sns.barplot(['Neutral', 'Happy', 'Sad', 'Surprise'], df['class'].value_counts(), palette='Greens_d')
+sns.barplot(categories, df['class'].value_counts(), palette='Greens_d')
 plt.xlabel('Emotions')
 plt.ylabel('Emotion')
 plt.title('Value Count of emotions')
@@ -145,9 +158,9 @@ df['ranking'] = np.zeros((df.shape[0],1))
 for i in range(df.shape[0]):
     category = df['class'][i]
     
-    if category == 'Happy':
+    if category == 'Amazed':
         df['ranking'][i] = 0.9
-    elif category == 'Surprise':
+    elif category == 'Satisfied':
         df['ranking'][i] = 0.7
     elif category == 'Neutral':
         df['ranking'][i] = 0.5
@@ -175,20 +188,21 @@ plt.savefig('graphs/dist.jpg')
 df['posneg'] = np.zeros((df.shape[0],1))
 
 for i in range(df.shape[0]):
-    if df['class'][i] =='Happy' or df['class'][i] == 'Surprise' or df['class'][i] == 'Neutral':
+    if df['class'][i] =='Amazed' or df['class'][i] == 'Satisfied' or df['class'][i] == 'Neutral':
         df['posneg'][i] = 1
     else:
         df['posneg'][i] = 0
 
-        
-y = [df['posneg'].value_counts()[0], df['posneg'].value_counts()[1]]
 
-plt.figure(figsize=(15,13))
-sns.barplot(['Negative','Positive'],y, alpha=0.9)
-plt.xlabel('Categories')
-plt.ylabel('Count')
-plt.title('Value Count of Positive and Negative emotions')
-plt.savefig('graphs/posneg.jpg')
+if len(df['posneg'].unique()) > 1:
+    y = [df['posneg'].value_counts()[0], df['posneg'].value_counts()[1]]
+
+    plt.figure(figsize=(15,13))
+    sns.barplot(['Negative','Positive'],y, alpha=0.9)
+    plt.xlabel('Categories')
+    plt.ylabel('Count')
+    plt.title('Value Count of Positive and Negative emotions')
+    plt.savefig('graphs/posneg.jpg')
 
 
 
@@ -211,14 +225,4 @@ cv2.destroyAllWindows()
 video.release()
 
 
-if args.alert == 1:
-    pygame.mixer.init()
-    pygame.mixer.music.load("alert.wav")
-    pygame.mixer.music.play()
-    while pygame.mixer.music.get_busy() == True:
-        continue        
-    s.call(['notify-send', 'Detection Done!'])
-    do = False
-
-else:
-    print('[!] Done!')
+print('[!] Done!')
