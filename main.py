@@ -19,6 +19,8 @@ import argparse
 warnings.filterwarnings('ignore')
 plt.style.use('fivethirtyeight')
 
+# name of the python file with graph functions
+import utils
 
 # Taking arguments
 parser = argparse.ArgumentParser()
@@ -124,105 +126,18 @@ df = pd.DataFrame(data, columns=['frame', 'class'])
 df.to_csv('results.csv', index=False, header=True)
 
 
+# Graphs data
 
-# Creating graphs
-df = pd.read_csv('results.csv')
-categories = []
-size = []
-if len(df['class']) != 0:
-    unique = df['class'].unique()
-    
-    for value in range(len(df['class'].value_counts())):
-        size.append(df['class'].value_counts()[value])
-        
-    for value in range(len(unique)):
-        categories.append(unique[value])
-# Pie chart
-plt.figure(figsize=(15,13))
-plt.title('Percentage of emotions')
-plt.pie(size, labels=categories, autopct='%1.1f%%')
-plt.savefig('graphs/pie.jpg')
-
-# Barplot
-plt.figure(figsize=(15,13))
-sns.barplot(categories, df['class'].value_counts(), palette='Greens_d')
-plt.xlabel('Emotions')
-plt.ylabel('Emotion')
-plt.title('Value Count of emotions')
-plt.savefig('bar.jpg')
-
-# basic changes
-#Creating a new column
-df['ranking'] = np.zeros((df.shape[0],1))
-
-for i in range(df.shape[0]):
-    category = df['class'][i]
-    
-    if category == 'Amazed':
-        df['ranking'][i] = 0.9
-    elif category == 'Satisfied':
-        df['ranking'][i] = 0.7
-    elif category == 'Neutral':
-        df['ranking'][i] = 0.5
-    else:
-        df['ranking'][i] = 0.3
-        
-smoother = ConvolutionSmoother(window_len=30, window_type='ones')
-smoother.smooth(df['ranking'])
-
-# generate intervals
-low, up = smoother.get_intervals('sigma_interval', n_sigma=3)
-
-# plot the smoothed timeseries with intervals
-plt.figure(figsize=(15,13))
-plt.plot(smoother.data[0], color='orange')
-plt.plot(smoother.smooth_data[0], linewidth=3, color='blue')
-plt.fill_between(range(len(smoother.data[0])), low[0], up[0], alpha=0.5)
-plt.xlabel('Time')
-plt.ylabel('Satisfaction')
-plt.title('Satisfaction rate over time')
-plt.savefig('graphs/dist.jpg')
+utils.graph()
 
 
-# Basic changes
-df['posneg'] = np.zeros((df.shape[0],1))
-
-for i in range(df.shape[0]):
-    if df['class'][i] =='Amazed' or df['class'][i] == 'Satisfied' or df['class'][i] == 'Neutral':
-        df['posneg'][i] = 1
-    else:
-        df['posneg'][i] = 0
+# New graphs
+utils.new_graphs()
 
 
-if len(df['posneg'].unique()) > 1:
-    y = [df['posneg'].value_counts()[0], df['posneg'].value_counts()[1]]
-
-    plt.figure(figsize=(15,13))
-    sns.barplot(['Negative','Positive'],y, alpha=0.9)
-    plt.xlabel('Categories')
-    plt.ylabel('Count')
-    plt.title('Value Count of Positive and Negative emotions')
-    plt.savefig('graphs/posneg.jpg')
+# Convert detected frames to mp4 output
+utils.to_mp4()
 
 
 
-# Converting detected frames to an output video
-fps = 30
-path = 'frames/'
-name = 'output/output.mp4'
-img_file = [path+str(i)+'.jpg' for i in range(len(os.listdir(path)))]
-img = cv2.imread(img_file[0])
-height, width, channel = img.shape
 
-video = cv2.VideoWriter(name, cv2.VideoWriter_fourcc(*'XVID'), fps, (width, height))
-print('[!] Converting..')
-time.sleep(2)
-
-for image in tqdm(img_file):
-    video.write(cv2.imread(image))
-
-cv2.destroyAllWindows()
-video.release()
-
-
-print('[!] Done!')
